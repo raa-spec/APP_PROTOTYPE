@@ -38,11 +38,12 @@ export default function ServiceCard({
               {title}
             </h3>
 
-            <span
+           {badge? 
+           <span
               className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${badgeBg} ${badgeText}`}
             >
               {badge}
-            </span>
+            </span>:""}
 
           </div>
 

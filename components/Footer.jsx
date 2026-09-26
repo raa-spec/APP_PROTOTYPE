@@ -329,12 +329,7 @@ export default function Footer() {
             {/* Links */}
             <div className="flex flex-wrap gap-x-6 gap-y-3">
 
-              <Link
-                href="/bookings"
-                className="text-sm text-gray-500 hover:text-indigo-600 transition"
-              >
-                My Bookings
-              </Link>
+             
 
               <Link
                 href="/how-it-works"

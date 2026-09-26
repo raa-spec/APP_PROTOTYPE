@@ -3,10 +3,10 @@ import ServiceCard from "./ServiceCard";
 export default function Services() {
   const services = [
     {
-      href: "/services/salons",
+      href: "/services/saloons",
       icon: "✂️",
       title: "Saloon",
-      badge: "FOR MEN",
+     
       description:
         "Haircuts, beard grooming, head massage & men styling",
       actionText: "View Services (5 Shops)",
@@ -19,7 +19,7 @@ export default function Services() {
       href: "/services/parlours",
       icon: "💄",
       title: "Parlour",
-      badge: "FOR WOMEN",
+      
       description:
         "Facial, threading, waxing, hair spa & bridal care",
       actionText: "View Services (4 Parlours)",
@@ -42,7 +42,7 @@ export default function Services() {
     },
 
     {
-      href: "/services/diagnostic-labs",
+      href: "/services/diagnostic-centre",
       icon: "🧪",
       title: "Diagnostic Centre",
       badge: "PATHOLOGY",
