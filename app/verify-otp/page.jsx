@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { Toaster, toast } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 export default function VerifyOTP() {
   const searchParams = useSearchParams();
@@ -18,7 +18,7 @@ export default function VerifyOTP() {
     e.preventDefault();
 
     if (otp.length !== 6) {
-      toast.warn("Please enter a valid 6-digit OTP");
+      toast.error("Please enter a valid 6-digit OTP");
       return;
     }
 
@@ -47,21 +47,21 @@ export default function VerifyOTP() {
       const data = await response.json();
 
       if (!response.ok) {
-        toast.success(data.message || "Invalid OTP");
+        toast.error(data.message || "Invalid OTP");
         setLoading(false);
         return;
       }
 
       const loginResult = await signIn("credentials", {
         identifier: email,
-        password: password,
+        password,
         redirect: false,
       });
 
       sessionStorage.removeItem("signupPassword");
 
       if (loginResult?.error) {
-        toast.success("Email verified, but automatic login failed.");
+        toast.error("Email verified, but automatic login failed.");
         router.push("/login");
         return;
       }
@@ -76,67 +76,91 @@ export default function VerifyOTP() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm">
-        <div className="text-center mb-6">
-          <div className="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-2xl mb-3">
-            ✉️
+    <div className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6 sm:py-10">
+      <div className="mx-auto flex min-h-[calc(100vh-3rem)] w-full max-w-md items-center justify-center sm:min-h-[calc(100vh-5rem)]">
+        
+        <div className="w-full rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:rounded-3xl sm:p-8">
+
+          {/* Header */}
+          <div className="mb-6 text-center sm:mb-7">
+            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-50 text-xl text-indigo-600 sm:h-14 sm:w-14 sm:text-2xl">
+              ✉️
+            </div>
+
+            <h2 className="text-xl font-black text-slate-900 sm:text-2xl">
+              Verify Your Email
+            </h2>
+
+            <p className="mt-2 text-xs leading-relaxed text-slate-500 sm:text-sm">
+              We've sent a 6-digit OTP to
+            </p>
+
+            <p className="mt-1 break-all px-2 text-sm font-bold text-indigo-600 sm:text-base">
+              {email}
+            </p>
           </div>
 
-          <h2 className="text-2xl font-black text-slate-900">
-            Verify Your Email
-          </h2>
+          {/* OTP Form */}
+          <form onSubmit={handleVerifyOTP} className="space-y-4">
+            <div>
+              <label
+                htmlFor="otp"
+                className="mb-1.5 block text-xs font-bold text-slate-700 sm:text-sm"
+              >
+                Enter OTP
+              </label>
 
-          <p className="text-xs text-slate-500 mt-2">
-            We've sent a 6-digit OTP to
-          </p>
+              <input
+                id="otp"
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                maxLength={6}
+                value={otp}
+                autoFocus
+                onChange={(e) =>
+                  setOtp(e.target.value.replace(/\D/g, ""))
+                }
+                placeholder="Enter 6-digit OTP"
+                required
+                aria-label="6-digit OTP"
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-center text-lg font-bold tracking-[0.35em] text-slate-900 outline-none transition focus:border-transparent focus:ring-2 focus:ring-indigo-500 sm:px-3.5 sm:py-3.5 sm:text-xl sm:tracking-[0.5em]"
+              />
 
-          <p className="text-sm font-bold text-indigo-600 mt-1 break-all">
-            {email}
-          </p>
-        </div>
+              <p className="mt-2 text-center text-[11px] text-slate-400 sm:text-xs">
+                Enter the 6-digit code sent to your email
+              </p>
+            </div>
 
-        <form onSubmit={handleVerifyOTP} className="space-y-4">
-          <div>
-            <label
-              htmlFor="otp"
-              className="block text-xs font-bold text-slate-700 mb-1"
+            {/* Verify Button */}
+            <button
+              type="submit"
+              disabled={loading || otp.length !== 6}
+              className="w-full rounded-xl bg-indigo-600 py-3 text-sm font-bold text-white shadow-md shadow-indigo-200 transition-all hover:bg-indigo-700 active:scale-[0.99] disabled:cursor-not-allowed disabled:bg-indigo-400 disabled:shadow-none"
             >
-              Enter OTP
-            </label>
+              {loading
+                ? "Verifying & Logging in..."
+                : "Verify OTP →"}
+            </button>
+          </form>
 
-            <input
-              id="otp"
-              type="text"
-              inputMode="numeric"
-              maxLength={6}
-              value={otp}
-              onChange={(e) =>
-                setOtp(e.target.value.replace(/\D/g, ""))
-              }
-              placeholder="Enter 6-digit OTP"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-3 text-center text-lg font-bold tracking-[0.5em] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-              required
-            />
+          {/* Back */}
+          <div className="mt-5 flex justify-center sm:mt-6">
+            <button
+              type="button"
+              onClick={() => router.push("/signup")}
+              className="rounded-lg px-3 py-2 text-xs font-semibold text-indigo-600 transition hover:bg-indigo-50 hover:underline active:scale-95 sm:text-sm"
+            >
+              ← Back to Sign Up
+            </button>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm shadow-md shadow-indigo-200 transition disabled:bg-indigo-400 disabled:cursor-not-allowed"
-          >
-            {loading ? "Verifying & Logging in..." : "Verify OTP →"}
-          </button>
-        </form>
-
-        <div className="text-center mt-6">
-          <button
-            type="button"
-            onClick={() => router.push("/signup")}
-            className="text-xs font-semibold text-indigo-600 hover:underline"
-          >
-            ← Back to Sign Up
-          </button>
+          {/* Bottom Info */}
+          <div className="mt-5 border-t border-slate-100 pt-5 text-center sm:mt-6">
+            <p className="text-[11px] leading-relaxed text-slate-400 sm:text-xs">
+              🔐 Your OTP is required to verify your email address.
+            </p>
+          </div>
         </div>
       </div>
     </div>
