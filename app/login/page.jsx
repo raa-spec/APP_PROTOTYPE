@@ -34,7 +34,7 @@ export default function Login() {
       });
 
       if (result?.error) {
-        toast.warn("Invalid email/phone or password");
+        toast.error("Invalid email/phone or password");
         setLoading(false);
         return;
       }
@@ -154,6 +154,20 @@ export default function Login() {
             />
 
           </div>
+         
+<div className="flex justify-end -mt-2">
+  <button
+    type="button"
+    onClick={() => {
+      window.location.href = "/forgot-password";
+    }}
+    className="text-xs font-semibold text-indigo-600 hover:text-indigo-700 hover:underline hover:cursor-pointer transition"
+  >
+    Forgot Password?
+  </button>
+</div>
+
+
 
           {/* Login Button */}
           <button
